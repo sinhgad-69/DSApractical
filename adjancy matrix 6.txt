@@ -1,0 +1,119 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+class Flight {
+public:
+  void createFlightNetwork();
+  void displayAdjacencyMatrix();
+
+private:
+  int findCityIndex(const string& city) const; // Added const to indicate no modification
+  void addCity(const string& city);
+  void addConnection(const string& source, const string& destination, int distance);
+
+  vector<string> city_index;
+  vector<vector<int>> am;
+};
+
+int Flight::findCityIndex(const string& city) const {
+  for (int i = 0; i < city_index.size(); ++i) {
+    if (city_index[i] == city) {
+      return i;
+    }
+  }
+  return -1; // City not found
+}
+
+void Flight::addCity(const string& city) {
+  if (findCityIndex(city) == -1) {
+    city_index.push_back(city);
+    am.push_back(vector<int>(city_index.size(), 0));
+    for (int i = 0; i < am.size(); ++i) {
+      am[i].push_back(0);
+    }
+  } else {
+    cout << "City '" << city << "' already exists." << endl;
+  }
+}
+
+void Flight::addConnection(const string& source, const string& destination, int distance) {
+  int si = findCityIndex(source);
+  int di = findCityIndex(destination);
+  if (si == -1 || di == -1) {
+    cout << "Invalid source or destination city." << endl;
+  } else {
+    am[si][di] = distance;
+    am[di][si] = distance; // Assuming bi-directional connection
+  }
+}
+
+void Flight::createFlightNetwork() {
+  string source, destination;
+  int distance;
+  char choice;
+
+  do {
+    cout << "\nEnter source city: ";
+    cin >> source;
+    cout << "Enter destination city: ";
+    cin >> destination;
+    cout << "Enter distance between " << source << " and " << destination << ": ";
+    cin >> distance;
+
+    addCity(source);
+    addCity(destination);
+    addConnection(source, destination, distance);
+
+    cout << "Add another connection (y/n)? ";
+    cin >> choice;
+  } while (choice == 'y' || choice == 'Y');
+}
+
+void Flight::displayAdjacencyMatrix() {
+  cout << "\nAdjacency Matrix:\n";
+  cout << "\t";
+  for (const string& city : city_index) {
+    cout << city << "\t";
+  }
+  cout << endl;
+
+  for (int i = 0; i < am.size(); ++i) {
+    cout << city_index[i] << "\t";
+    for (int j = 0; j < am[i].size(); ++j) {
+      cout << am[i][j] << "\t";
+    }
+    cout << endl;
+  }
+}
+
+int main() {
+  Flight flight;
+  int choice;
+
+  do {
+    cout << "\n** Flight Main Menu **\n";
+    cout << "1. Create Flight Network\n";
+    cout << "2. Display Adjacency Matrix\n";
+    cout << "3. Exit\n";
+    cout << "Enter your choice: ";
+    cin >> choice;
+
+    switch (choice) {
+      case 1:
+        flight.createFlightNetwork();
+        break;
+      case 2:
+        flight.displayAdjacencyMatrix();
+        break;
+      case 3:
+        break; // Exit case, no action needed
+      default:
+        cout << "Invalid choice. Please enter 1, 2, or 3." << endl;
+    }
+  } while (choice != 3);
+
+  return 0;
+}
