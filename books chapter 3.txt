@@ -1,0 +1,120 @@
+#include <iostream>
+#include <cstdlib>
+#include <cstring>
+
+using namespace std;
+
+struct node {
+    char name[20];
+    node *next;
+    int flag;
+};
+
+class Book {
+private:
+    char ch[20];
+    int n, i;
+    node *head = NULL, *temp = NULL, *t1 = NULL;
+
+public:
+    node *create();
+    void insertb();
+    void insertc();
+    void displayb();
+};
+
+node *Book::create() {
+    node *p = new node;
+    p->next = NULL;
+    p->flag = 0;
+    cout << "\nEnter the name: ";
+    cin >> p->name;
+    return p;
+}
+
+void Book::insertb() {
+    if (head == NULL) {
+        t1 = create();
+        head = t1;
+    } else {
+        cout << "\nBook already exists.";
+    }
+}
+
+void Book::insertc() {
+    if (head == NULL) {
+        cout << "\nThere is no book to insert chapter into.";
+    } else {
+        cout << "\nHow many chapters do you want to insert? ";
+        cin >> n;
+        for (i = 0; i < n; i++) {
+            t1 = create();
+            if (head->flag == 0) {
+                head->next = t1;
+                head->flag = 1;
+            } else {
+                temp = head;
+                temp = temp->next;
+                while (temp->next!= NULL)
+                    temp = temp->next;
+                temp->next = t1;
+            }
+        }
+    }
+}
+/*
+void Book::displayb() {
+    if (head == NULL) {
+        cout << "\nBook does not exist.";
+    } else {
+        temp = head;
+        while (temp!= NULL) {
+            cout << "\nName: " << temp->name;
+            temp = temp->next;
+        }
+    }
+}
+*/
+void Book::displayb() {
+    if (head == NULL) {
+        cout << "\nBook does not exist.";
+    } else {
+        temp = head;
+        cout << "\nBook: " << temp->name;
+        temp = temp->next;
+        while (temp!= NULL) {
+            cout << "\n\tChapter: " << temp->name;
+            temp = temp->next;
+        }
+    }
+}
+
+
+int main() {
+    Book b;
+    int choice;
+    while (1) {
+        cout << "\n1. Insert book";
+        cout << "\n2. Insert chapter";
+        cout << "\n3. Display book";
+        cout << "\n4. Exit";
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                b.insertb();
+                break;
+            case 2:
+                b.insertc();
+                break;
+            case 3:
+                b.displayb();
+                break;
+            case 4:
+                exit(0);
+            default:
+                cout << "\nWrong choice";
+        }
+    }
+    return 0;
+}
