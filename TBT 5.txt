@@ -1,0 +1,157 @@
+#include <iostream>
+using namespace std;
+
+class TBT;
+
+class Node {
+    Node *left, *right;
+    int data;
+    bool rbit, lbit;
+public:
+    Node() {
+        left = nullptr;
+        right = nullptr;
+        rbit = false;
+        lbit = false;
+    }
+
+    Node(int d) {
+        left = nullptr;
+        right = nullptr;
+        rbit = false;
+        lbit = false;
+        data = d;
+    }
+
+    friend class TBT;
+};
+
+class TBT {
+    Node *root; // acts as a dummy node
+public:
+    TBT() { // dummy node initialization
+        root = new Node(9999);
+        root->left = root;
+        root->rbit = true;
+        root->lbit = false;
+        root->right = root;
+    }
+
+    void create();
+    void insert(int data);
+    Node *inorder_successor(Node *);
+    void inorder_traversal();
+};
+
+void TBT::inorder_traversal() {
+    Node *current = root->left;
+    while (current->lbit) {
+        current = current->left;
+    }
+    while (current != root) {
+        cout << " " << current->data;
+        current = inorder_successor(current);
+    }
+}
+
+Node* TBT::inorder_successor(Node *current) {
+    if (current->rbit == 0) {
+        return current->right;
+    } else {
+        current = current->right;
+        while (current->lbit) {
+            current = current->left;
+        }
+        return current;
+    }
+}
+
+void TBT::create() {
+    int n;
+    cout << "\nEnter number of nodes: ";
+    cin >> n;
+    for (int i = 0; i < n; i++) {
+        int info;
+        cout << "Enter data for node " << i+1 << ": ";
+        cin >> info;
+        this->insert(info);
+    }
+}
+
+void TBT::insert(int data) {
+    Node *current = root->left;
+
+    if (root->left == root && root->right == root) { // no node in tree
+        Node *p = new Node(data);
+        p->left = root->left;
+        p->lbit = root->lbit;
+        p->rbit = false;
+        p->right = root->right;
+        root->left = p;
+        root->lbit = true;
+        cout << "Inserted start " << p->data << endl;
+    } else {
+        while (true) {
+            if (current->data > data) { // insert left
+                Node *p = new Node(data);
+                if (!current->lbit) {
+                    p->left = current->left;
+                    p->lbit = current->lbit;
+                    p->rbit = false;
+                    p->right = current;
+                    current->left = p;
+                    current->lbit = true;
+                    cout << "Inserted left " << p->data << endl;
+                    break;
+                } else {
+                    current = current->left;
+                }
+            } else { // insert right
+                if (current->rbit == 0) {
+                    Node *p = new Node(data);
+                    p->right = current->right;
+                    p->rbit = current->rbit;
+                    p->lbit = false;
+                    p->left = current;
+                    current->rbit = true;
+                    current->right = p;
+                    cout << "Inserted right " << p->data << endl;
+                    break;
+                } else {
+                    current = current->right;
+                }
+            }
+        }
+    }
+}
+
+int main() {
+    TBT t1;
+    int choice;
+    do {
+        cout << "\n\n1. Create Tree\n2. Insert into tree\n3. Inorder\n4. Exit\nEnter your choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                t1.create();
+                break;
+            case 2: {
+                int value;
+                cout << "\nEnter Number(data): ";
+                cin >> value;
+                t1.insert(value);
+                break;
+            }
+            case 3:
+                cout << "\nInorder Traversal of TBT: \n";
+                t1.inorder_traversal();
+                break;
+            case 4:
+                break;
+            default:
+                cout << "\nWrong choice.";
+        }
+    } while (choice != 4);
+
+    return 0;
+}
