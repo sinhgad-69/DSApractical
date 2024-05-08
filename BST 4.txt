@@ -1,0 +1,102 @@
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+struct Node {
+    int info;
+    Node *left;
+    Node *right;
+};
+
+class BST {
+public:
+    Node *root;
+    BST() {
+        root = NULL;
+    }
+    void insert(Node *tree, Node *newnode);
+    void display(Node *ptr, int level);
+};
+
+int main() {
+    int choice, num;
+    BST bst;
+    Node *temp;
+    while (true) {
+        cout << "Operations on BST" << endl;
+        cout << "1. Insert Element" << endl;
+        cout << "2. Display" << endl;
+        cout << "11. Quit" << endl;
+        cout << "Enter your choice: ";
+        cin >> choice;
+        switch(choice) {
+            case 1:
+                temp = new Node();
+                cout << "Enter the number to be inserted: ";
+                cin >> temp->info;
+                bst.insert(bst.root, temp);
+                break;
+            case 2:
+                cout << "Display BST:" << endl;
+                bst.display(bst.root, 1);
+                cout << endl;
+                break;
+            case 11:
+                exit(1);
+            default:
+                cout << "Wrong choice" << endl;
+        }
+    }
+}
+
+void BST::insert(Node *tree, Node *newnode) {
+    if (root == NULL) {
+        root = new Node;
+        root->info = newnode->info;
+        root->left = NULL;
+        root->right = NULL;
+        cout << "Root Node is Added" << endl;
+        return;
+    }
+    if (tree->info == newnode->info) {
+        cout << "Element already in the tree" << endl;
+        return;
+    }
+    if (tree->info > newnode->info) {
+        if (tree->left != NULL) {
+            insert(tree->left, newnode);
+        } else {
+            tree->left = newnode;
+            newnode->left = NULL;
+            newnode->right = NULL;
+            cout << "Node Added To Left" << endl;
+            return;
+        }
+    } else {
+        if (tree->right != NULL) {
+            insert(tree->right, newnode);
+        } else {
+            tree->right = newnode;
+            newnode->left = NULL;
+            newnode->right = NULL;
+            cout << "Node Added To Right" << endl;
+            return;
+        }
+    }
+}
+
+void BST::display(Node *ptr, int level) {
+    int i;
+    if (ptr != NULL) {
+        display(ptr->right, level + 1);
+        cout << endl;
+        if (ptr == root)
+            cout << "Root->: ";
+        else {
+            for (i = 0; i < level; i++)
+                cout << " ";
+        }
+        cout << ptr->info;
+        display(ptr->left, level + 1);
+    }
+}
